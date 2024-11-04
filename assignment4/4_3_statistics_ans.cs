@@ -20,7 +20,7 @@ namespace statistics
 
             int stdCount = data.GetLength(0) - 1;
             
-                        int rangeOfstd = data.GetLength(0) - 1;
+            int rangeOfstd = data.GetLength(0) - 1;
             int rangeOfsbj = data.GetLength(1) - 1;
             
             Console.WriteLine("Average Scores:");
