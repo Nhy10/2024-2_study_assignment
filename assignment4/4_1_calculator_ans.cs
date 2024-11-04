@@ -60,7 +60,16 @@ namespace calculator
                 return num1*num2;
             }
             else if (op=="/") {
-                return num1/num2;
+                try {
+                    if (num2 == 0) {
+                        throw new DivideByZeroException("Division by zero is not allowed");
+                    }
+                    return num1 / num2;
+                }
+                catch (DivideByZeroException e) {
+                    Console.WriteLine($"{e.Message}");
+                    return 0;
+                }
             }
             else if (op=="**") {
                 return square(num1, num2);
@@ -74,8 +83,22 @@ namespace calculator
             else if (op=="L") {
                 return L(num1, num2);
             }
-            throw new InvalidOperationException("Invalid operator");
-            throw new DivideByZeroException("Division by zero is not allowed");
+            else  {
+                try {
+                    throw new InvalidOperationException("Invalid operator");
+                    return 0;
+                }
+            }
+            else  {
+                try {
+                    throw new InvalidOperationException("Invalid operator");
+                    return 0;
+                }
+                catch (InvalidOperationException e) {
+                    Console.WriteLine($"{e.Message}");
+                    return 0;
+                }
+            }
         }
         
         private double square(double num1, double num2) {
