@@ -49,9 +49,60 @@ namespace calculator
     // Calculator class to perform operations
     public class Calculator
     {
-        // ---------- TODO ----------
+        public double Calculate (double num1, string op, double num2) {
+            if (op=="+") {
+                return num1+num2;
+            }
+            else if (op=="-") {
+                return num1-num2;
+            }
+            else if (op=="*") {
+                return num1*num2;
+            }
+            else if (op=="/") {
+                return num1/num2;
+            }
+            else if (op=="**") {
+                return square(num1, num2);
+            }
+            else if (op=="%") {
+                return num1%num2;
+            }
+            else if (op=="G") {
+                return G(num1, num2);
+            }
+            else if (op=="L") {
+                return L(num1, num2);
+            }
+            throw new InvalidOperationException("Invalid operator");
+            throw new DivideByZeroException("Division by zero is not allowed");
+        }
         
-        // --------------------
+        private double square(double num1, double num2) {
+            if (num2<0) {
+                return (1/num1)*square(num1, num2+1);   
+            }
+            if (num2==0) {
+                return 1;   
+            }
+            else {
+                return num1*square(num1, num2-1);
+            }
+            
+        }
+        
+        private double G(double num1, double num2) {
+            while (num2 != 0) {
+                double tmp = num2;
+                num2 = num1 % num2;
+                num1 = tmp;
+            }
+            return num1;
+        }
+        
+        private double L(double num1, double num2) {
+            return (num1*num2)/G(num1, num2);
+        }
     }
 }
 

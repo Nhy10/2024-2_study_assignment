@@ -19,9 +19,67 @@ namespace statistics
             // double.Parse(str)
 
             int stdCount = data.GetLength(0) - 1;
-            // ---------- TODO ----------
             
-            // --------------------
+                        int rangeOfstd = data.GetLength(0) - 1;
+            int rangeOfsbj = data.GetLength(1) - 1;
+            
+            Console.WriteLine("Average Scores:");
+            for (int i = 2; i <= rangeOfsbj; i++) {
+                double avg = 0;
+                for (int j = 1; j <= rangeOfstd; j++) {
+                    avg += double.Parse(data[j, i]);
+                }  
+                Console.WriteLine($"{data[0, i]} : {(avg/stdCount):F2}");
+            }
+            Console.WriteLine("");
+            
+            
+            Console.WriteLine("Max and min Scores:");
+            for (int i = 2; i <= rangeOfsbj; i++) {
+                double max = double.Parse(data[1, i]);
+                double min = double.Parse(data[1, i]);
+                for (int j = 1; j <= rangeOfstd; j++) {
+                    if (double.Parse(data[j, i]) > max) {
+                        max = double.Parse(data[j, i]);
+                    }
+                    if (double.Parse(data[j, i]) < min) {
+                        min = double.Parse(data[j, i]);
+                    }
+                }
+                Console.WriteLine($"{data[0, i]}: ({max}, {min})");
+            }
+            Console.WriteLine("");
+            
+            
+            Console.WriteLine("Students rank by total scores:");
+            double[] stdTotal = new double [stdCount];
+            string[] stdName = new string [stdCount];
+            for (int i = 1; i <= rangeOfstd; i++) {
+                double total = 0;
+                for (int j = 2; j<= rangeOfsbj; j++) {
+                    total += double.Parse(data[i, j]);
+                }
+                stdTotal[i - 1] = total;
+                stdName[i - 1] = data[i, 1];
+            }
+
+            for (int i = 0; i < stdCount; i++) {
+                int cnt = 0;
+                for (int j = 0; j < stdCount; j++) {
+                    if (stdTotal[j] >= stdTotal[i]) {
+                        cnt ++;
+                    }
+                }
+                if (cnt == 1) {
+                    Console.WriteLine($"{stdName[i]}: {cnt}st");
+                }
+                else if (cnt == 2) {
+                    Console.WriteLine($"{stdName[i]}: {cnt}nd");
+                }
+                else {
+                    Console.WriteLine($"{stdName[i]}: {cnt}th");
+                }
+            }
         }
     }
 }
