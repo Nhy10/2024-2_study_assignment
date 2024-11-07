@@ -88,12 +88,6 @@ namespace calculator
                     throw new InvalidOperationException("Invalid operator");
                     return 0;
                 }
-            }
-            else  {
-                try {
-                    throw new InvalidOperationException("Invalid operator");
-                    return 0;
-                }
                 catch (InvalidOperationException e) {
                     Console.WriteLine($"{e.Message}");
                     return 0;
