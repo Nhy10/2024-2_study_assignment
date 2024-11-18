@@ -20,7 +20,7 @@ public class Character : MonoBehaviour
     {
         // 좌클릭시 RemainJump를 하나 소모하여 CharacterJumpPower의 힘으로 점프한다.
         // ---------- TODO ---------- 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && RemainJump > 0)
         {
             RemainJump -= 1;
             Jump(CharacterJumpPower);
