@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ public class GameManager : MonoBehaviour
         // PlayerBall, CamObj, MyUIManager를 얻어온다.
         // ---------- TODO ---------- 
         PlayerBall = GameObject.Find("PlayerBall");
-        CamObj = GameObject.Find("CamObj");
+        CamObj = GameObject.Find("Main Camera");
         MyUIManager = FindObjectOfType<UIManager>();
 
         // -------------------- 
@@ -69,33 +70,22 @@ public class GameManager : MonoBehaviour
         // 각 공의 이름은 {index}이며, 아래 함수로 index에 맞는 Material을 적용시킨다.
         // Obj.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/ball_1");
         // ---------- TODO ---------- 
-        GameObject[] balls = new GameObject[15];
 
-        for (int i = 0; i < 15; i++)
-        {
-            balls[i] = BallPrefab;
-            balls[i].name = $"{i+1}";
-        }
-
-        int idx = 0;
+        int idx = 1;
         for (int row = 0; row < 5; row++)
         {
-            for (int col = 0; col < row; col++)
+            for (int col = 0; col <= row; col++)
             {
-                if (row == 0)
-                {
-                    balls[idx].transform.position = StartPosition;
-                    balls[idx].transform.rotation = StartRotation;
-                }
-                else
-                {
-                    float zoffset = row * (BallRadius * 2 + RowSpacing);
-                    float xoffset = col * (BallRadius * 2 + RowSpacing) - zoffset / 2;
+                GameObject ball = Instantiate(BallPrefab);
+                ball.name = $"{idx}";
+                float xoffset = col * (BallRadius * 2 + RowSpacing) - (row * (BallRadius + RowSpacing));
+                float zoffset = row * (BallRadius * 2 + RowSpacing);
 
-                    balls[idx].transform.position = StartPosition + new Vector3(xoffset, 0, zoffset);
-                }
+                ball.transform.position = StartPosition + new Vector3(xoffset, 0, zoffset);
+                ball.transform.rotation = StartRotation;
+
                 string materialname = $"Materials/ball_{idx}";
-                balls[idx].GetComponent<MeshRenderer>().material = Resources.Load<Material>(materialname);
+                ball.GetComponent<MeshRenderer>().material = Resources.Load<Material>(materialname);
 
                 idx++;
             }
@@ -106,8 +96,9 @@ public class GameManager : MonoBehaviour
     {
         // CamObj는 PlayerBall을 CamSpeed의 속도로 따라간다.
         // ---------- TODO ---------- 
-        Vector3 targetposition = PlayerBall.transform.position;
-        CamObj.transform.position = targetposition * CamSpeed * Time.deltaTime;
+        Vector3 targetposition = new Vector3(PlayerBall.transform.position.x, CamObj.transform.position.y, PlayerBall.transform.position.z);
+        CamObj.transform.position = Vector3.Lerp(CamObj.transform.position, targetposition, CamSpeed * Time.deltaTime);
+        // targetposition * CamSpeed * Time.deltaTime;
         // -------------------- 
     }
 
@@ -126,6 +117,7 @@ public class GameManager : MonoBehaviour
         if (rb)
         {
             Vector3 direction = targetPos - PlayerBall.transform.position;
+            direction.y = 0;
             float power = CalcPower(direction);
 
             rb.AddForce(direction.normalized * power, ForceMode.Impulse); //단위벡터 * direction 크기
