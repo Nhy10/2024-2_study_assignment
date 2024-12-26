@@ -18,12 +18,27 @@ public class MovementManager : MonoBehaviour
 
     private bool TryMove(Piece piece, (int, int) targetPos, MoveInfo moveInfo)
     {
-        // moveInfo의 distance만큼 direction을 이동시키며 이동이 가능한지를 체크
-        // 보드에 있는지, 다른 piece에 의해 막히는지 등을 체크
-        // 폰에 대한 예외 처리를 적용
-        // --- TODO ---
-        
-        // ------
+        (int, int) currentPos = piece.MyPos;
+
+        for (int step = 1; step <= moveInfo.distance; step++)
+        {
+            (int, int) nextPos = (currentPos.Item1 + step * moveInfo.dirX, currentPos.Item2 + step * moveInfo.dirY);
+
+            if (!Utils.IsInBoard(nextPos)) return false;
+
+            var targetPiece = gameManager.Pieces[nextPos.Item1, nextPos.Item2];
+            if (targetPiece != null)
+            {
+                if (targetPiece.PlayerDirection == piece.PlayerDirection) return false;
+
+                if (step == moveInfo.distance) return true; // Capturing move
+                return false;
+            }
+
+            if (step == moveInfo.distance) return true;
+        }
+
+        return false;
     }
 
     // 체크를 제외한 상황에서 가능한 움직임인지를 검증
@@ -83,9 +98,22 @@ public class MovementManager : MonoBehaviour
 
         // 왕이 지금 체크 상태인지를 리턴
         // gameManager.Pieces에서 Piece들을 참조하여 움직임을 확인
-        // --- TODO ---
-        
-        // ------
+        foreach (var row in gameManager.Pieces)
+        {
+            foreach (var piece in row)
+            {
+                if (piece != null && piece.PlayerDirection != playerDirection)
+                {
+                    foreach (var move in piece.GetMoves())
+                    {
+                        (int, int) checkPos = (piece.MyPos.Item1 + move.dirX, piece.MyPos.Item2 + move.dirY);
+                        if (checkPos == kingPos) return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public void ShowPossibleMoves(Piece piece)
@@ -96,9 +124,20 @@ public class MovementManager : MonoBehaviour
         // IsValidMove를 사용
         // effectPrefab을 effectParent의 자식으로 생성하고 위치를 적절히 설정
         // currentEffects에 effectPrefab을 추가
-        // --- TODO ---
-        
-        // ------
+        foreach (var move in piece.GetMoves())
+        {
+            for (int step = 1; step <= move.distance; step++)
+            {
+                (int, int) nextPos = (piece.MyPos.Item1 + step * move.dirX, piece.MyPos.Item2 + step * move.dirY);
+                if (!IsValidMove(piece, nextPos)) break;
+
+                GameObject effect = Instantiate(effectPrefab, effectParent);
+                effect.transform.position = Utils.ToRealPos(nextPos);
+                currentEffects.Add(effect);
+
+                if (gameManager.Pieces[nextPos.Item1, nextPos.Item2] != null) break;
+            }
+        }
     }
 
     // 효과 비우기
