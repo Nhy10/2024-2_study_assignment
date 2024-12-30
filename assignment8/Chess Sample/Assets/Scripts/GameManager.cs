@@ -116,7 +116,7 @@ public class GameManager : MonoBehaviour
         Pieces[targetPos.Item1, targetPos.Item2] = piece;
     }
 
-    void ChangeTurn()
+    public void ChangeTurn()
     {
         CurrentTurn = -CurrentTurn;
         uiManager.UpdateTurn(CurrentTurn);

@@ -98,20 +98,18 @@ public class MovementManager : MonoBehaviour
 
         // 왕이 지금 체크 상태인지를 리턴
         // gameManager.Pieces에서 Piece들을 참조하여 움직임을 확인
-        foreach (var row in gameManager.Pieces)
+        foreach (var piece in gameManager.Pieces)
         {
-            foreach (var piece in row)
+            if (piece != null && piece.PlayerDirection != playerDirection)
             {
-                if (piece != null && piece.PlayerDirection != playerDirection)
+                foreach (var move in piece.GetMoves())
                 {
-                    foreach (var move in piece.GetMoves())
-                    {
-                        (int, int) checkPos = (piece.MyPos.Item1 + move.dirX, piece.MyPos.Item2 + move.dirY);
-                        if (checkPos == kingPos) return true;
-                    }
+                    (int, int) checkPos = (piece.MyPos.Item1 + move.dirX, piece.MyPos.Item2 + move.dirY);
+                    if (checkPos == kingPos) return true;
                 }
             }
         }
+
 
         return false;
     }
